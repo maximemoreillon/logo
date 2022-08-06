@@ -4,15 +4,18 @@
   <div>
     <div class="controls">
       <div>
-        <label for="thickness">Thickness</label>
-        <input type="range" min="1" max="100" v-model.number="thickness" id="thickness">
-        <input type="number" v-model.number="thickness">
+        <label for="radius">Radius</label>
+        <input type="range" min="1" :max="0.5 * Math.min(width, height)" v-model.number="radius" id="radius">
+        <input type="number" v-model.number="radius" />
+        <button @click="setIdealRadius()">Ideal</button>
       </div>
       <div>
-        <label for="radius">Radius</label>
-        <input type="range" min="1" max="400" v-model.number="radius" id="radius">
-        <input type="number" v-model.number="radius" />
+        <label for="thickness">Thickness</label>
+        <input type="range" min="1" :max="maxThickness" v-model.number="thickness" id="thickness">
+        <input type="number" v-model.number="thickness">
+        <button @click="setidealThcikness()">Ideal</button>
       </div>
+
       <div>
         <label for="color">Color</label>
         <input type="color" v-model="color" id="color">
@@ -68,6 +71,12 @@ export default {
         x2: (-b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a),
       }
     },
+    setidealThcikness(){
+      this.thickness = 0.25 * this.radius
+    },
+    setIdealRadius(){
+      this.radius = Math.max(this.width, this.height) * 0.75 * 0.5
+    },
 
 
 
@@ -77,8 +86,8 @@ export default {
       const endAngle = startAngle + 360 / this.parts
 
       const t = thickness
-      const innerRadius = radius - (thickness /2)
-      const outerRadius = radius + (thickness / 2)
+      const innerRadius = radius - (0.5 * thickness)
+      const outerRadius = radius + (0.5 * thickness)
 
       const { x1: startDX } = this.quadraticFormula({ a: 2, b: 2 * (t - innerRadius), c: Math.pow(t, 2) })
       const { x1: endDx } = this.quadraticFormula({ a: 2, b: -2 * (t + outerRadius), c: Math.pow(t, 2) })
@@ -121,7 +130,9 @@ export default {
 
   },
   computed: {
-
+    maxThickness(){
+      return this.radius * 0.34
+    }
   }
 
 }
