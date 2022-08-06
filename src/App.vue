@@ -1,22 +1,44 @@
 
 
 <template>
-  <svg width="800" height="800">
+  <div>
+    <div class="controls">
+      <div>
+        <label for="thickness">Thickness</label>
+        <input type="range" min="1" max="100" v-model.number="thickness" id="thickness">
+        <span>{{thickness}}</span>
+      </div>
+      <div>
+        <label for="radius">Radius</label>
+        <input type="range" min="1" max="400" v-model.number="radius" id="radius">
+        <span>{{radius}}</span>
+      </div>
+      <div>
+        <label for="color">Color</label>
+        <input type="color" v-model="color" id="color">
+      </div>
+    </div>
+    <svg width="800" height="800">
 
 
 
-    <path v-for="part in parts" :key="part" fill="lightpink" stroke="#446688" stroke-width="2"
-      :d="describeLogoPart(400, 400, radius, thickness, part * (360/parts))" />
+      <path v-for="part in parts" :key="part" :fill="color"
+        :d="describeLogoPart(400, 400, radius, thickness, part * (360 / parts))" />
 
-    <line x1="400" y1="400" x2="400" y2="0" style="stroke:rgb(0,0,0,0.5);stroke-width:1" />
-    <line x1="200" y1="200" x2="600" y2="200" style="stroke:rgb(0,0,0,0.5);stroke-width:1" />
+      <template v-if="showConstructionLines">
+        <line x1="400" y1="400" x2="400" y2="0" style="stroke:rgb(0,0,0,0.5);stroke-width:1" />
+        <line x1="200" :y1="400 - radius" x2="600" :y2="400 - radius" style="stroke:rgb(0,0,0,0.5);stroke-width:1" />
 
-    <circle cx="400" cy="400" :r="radius" stroke="black" stroke-width="1" fill="none" />
-    <circle cx="400" cy="400" :r="radius + 0.5* thickness" stroke="black" stroke-width="1" fill="none" />
-    <circle cx="400" cy="400" :r="radius - 0.5* thickness" stroke="black" stroke-width="1" fill="none" />
+        <circle cx="400" cy="400" :r="radius" stroke="black" stroke-width="1" fill="none" />
+        <circle cx="400" cy="400" :r="radius + 0.5 * thickness" stroke="black" stroke-width="1" fill="none" />
+        <circle cx="400" cy="400" :r="radius - 0.5 * thickness" stroke="black" stroke-width="1" fill="none" />
+      </template>
 
 
-  </svg>
+
+    </svg>
+  </div>
+
 </template>
 
 <script >
@@ -26,7 +48,8 @@ export default {
     return {
       radius: 200,
       thickness: 50,
-      parts: 3
+      parts: 3,
+      color: '#c00000',
 
     }
   },
@@ -70,6 +93,8 @@ export default {
       const { x1: startDX } = this.quadraticFormula({ a: 2, b: 2 * (t - innerRadius), c: Math.pow(t, 2) })
       const { x1: endDx } = this.quadraticFormula({ a: 2, b: -2 * (t + outerRadius), c: Math.pow(t, 2) })
 
+      console.log({startDX, endDx})
+
 
       const alpha = this.radToDeg(Math.asin((t + startDX) / innerRadius))
       const gamma = this.radToDeg(Math.asin((t - endDx) / outerRadius))
@@ -102,6 +127,6 @@ export default {
 
 <style>
 svg {
-  outline: 1px solid red;
+  border: 1px solid #dddddd;
 }
 </style>
