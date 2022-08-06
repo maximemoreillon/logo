@@ -6,37 +6,27 @@
       <div>
         <label for="thickness">Thickness</label>
         <input type="range" min="1" max="100" v-model.number="thickness" id="thickness">
-        <span>{{thickness}}</span>
+        <input type="number" v-model.number="thickness">
       </div>
       <div>
         <label for="radius">Radius</label>
         <input type="range" min="1" max="400" v-model.number="radius" id="radius">
-        <span>{{radius}}</span>
+        <input type="number" v-model.number="radius" />
       </div>
       <div>
         <label for="color">Color</label>
         <input type="color" v-model="color" id="color">
       </div>
+      <div>
+        <button @click="downloadSvg">Download</button>
+      </div>
     </div>
-    <svg width="800" height="800">
 
-
-
+    <svg :width="width" :height="height" ref="svg">
       <path v-for="part in parts" :key="part" :fill="color"
-        :d="describeLogoPart(400, 400, radius, thickness, part * (360 / parts))" />
-
-      <template v-if="showConstructionLines">
-        <line x1="400" y1="400" x2="400" y2="0" style="stroke:rgb(0,0,0,0.5);stroke-width:1" />
-        <line x1="200" :y1="400 - radius" x2="600" :y2="400 - radius" style="stroke:rgb(0,0,0,0.5);stroke-width:1" />
-
-        <circle cx="400" cy="400" :r="radius" stroke="black" stroke-width="1" fill="none" />
-        <circle cx="400" cy="400" :r="radius + 0.5 * thickness" stroke="black" stroke-width="1" fill="none" />
-        <circle cx="400" cy="400" :r="radius - 0.5 * thickness" stroke="black" stroke-width="1" fill="none" />
-      </template>
-
-
-
+        :d="describeLogoPart(0.5 * width, 0.5 * height, radius, thickness, part * (360 / parts))" />
     </svg>
+
   </div>
 
 </template>
@@ -49,8 +39,9 @@ export default {
       radius: 200,
       thickness: 50,
       parts: 3,
+      width: 500,
+      height: 500,
       color: '#c00000',
-
     }
   },
   methods: {
@@ -89,12 +80,8 @@ export default {
       const innerRadius = radius - (thickness /2)
       const outerRadius = radius + (thickness / 2)
 
-
       const { x1: startDX } = this.quadraticFormula({ a: 2, b: 2 * (t - innerRadius), c: Math.pow(t, 2) })
       const { x1: endDx } = this.quadraticFormula({ a: 2, b: -2 * (t + outerRadius), c: Math.pow(t, 2) })
-
-      console.log({startDX, endDx})
-
 
       const alpha = this.radToDeg(Math.asin((t + startDX) / innerRadius))
       const gamma = this.radToDeg(Math.asin((t - endDx) / outerRadius))
@@ -110,15 +97,30 @@ export default {
       return [
         "M", innerStart.x, innerStart.y,
         "A", innerRadius, innerRadius, 0, 0, 0, innerEnd.x, innerEnd.y,
-        // "L", innerEnd.x, innerEnd.y,
         "L", outerEnd.x, outerEnd.y,
         "A", outerRadius, outerRadius, 0, 0, 1, outerStart.x, outerStart.y,
-        // "L", outerStart.x, outerStart.y,
         "L", innerStart.x, innerStart.y,
       ].join(" ");
 
+    },
+
+    downloadSvg(){
+      const color_formatted = this.color.replace('#','')
+      const filename = `logo_${color_formatted}`
+      const svg = this.$refs.svg.outerHTML
+      const svgBlob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+      const svgUrl = URL.createObjectURL(svgBlob)
+      const downloadLink = document.createElement("a");
+      downloadLink.href = svgUrl
+      downloadLink.download = `${filename}.svg`
+      document.body.appendChild(downloadLink)
+      downloadLink.click()
+      document.body.removeChild(downloadLink)
     }
 
+
+  },
+  computed: {
 
   }
 
