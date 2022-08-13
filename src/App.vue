@@ -4,6 +4,16 @@
   <div>
     <div class="controls">
       <div>
+        <label for="radius">Width</label>
+        <input type="range" min="1" :max="800" v-model.number="width" id="width">
+        <input type="number" v-model.number="width" />
+      </div>
+      <div>
+        <label for="radius">Height</label>
+        <input type="range" min="1" :max="800" v-model.number="height" id="width">
+        <input type="number" v-model.number="height" />
+      </div>
+      <div>
         <label for="radius">Radius</label>
         <input type="range" min="1" :max="0.5 * Math.min(width, height)" v-model.number="radius" id="radius">
         <input type="number" v-model.number="radius" />
@@ -86,8 +96,10 @@ export default {
       const endAngle = startAngle + 360 / this.parts
 
       const t = thickness
-      const innerRadius = radius - (0.5 * thickness)
-      const outerRadius = radius + (0.5 * thickness)
+      // const innerRadius = radius - (0.5 * thickness)
+      // const outerRadius = radius + (0.5 * thickness)
+      const innerRadius = radius - thickness
+      const outerRadius = radius
 
       const { x1: startDX } = this.quadraticFormula({ a: 2, b: 2 * (t - innerRadius), c: Math.pow(t, 2) })
       const { x1: endDx } = this.quadraticFormula({ a: 2, b: -2 * (t + outerRadius), c: Math.pow(t, 2) })
@@ -131,7 +143,7 @@ export default {
   },
   computed: {
     maxThickness(){
-      return this.radius * 0.34
+      return this.radius * 0.28
     }
   }
 
