@@ -71,6 +71,11 @@ def generateLogo(height=800, width=600, color='#c00000', backgroundColor="transp
 
     # drawing.setPixelScale(2)  # Set number of pixels per geometry unit
     #d.setRenderSize(400,200)  # Alternative to setPixelScale
+
+    isExist = os.path.exists(output_dir)
+    if not isExist:
+        os.makedirs(output_dir)
+
     drawing.saveSvg(f'{output_dir}/{filename}.svg')
     drawing.savePng(f'{output_dir}/{filename}.png')
 
@@ -79,9 +84,13 @@ def generateLogo(height=800, width=600, color='#c00000', backgroundColor="transp
 if __name__ == '__main__':
     WIDTH = 800
     HEIGHT = 600
-    COLOR = '#c00000'
-    BACKGROUND_COLOR = 'black'
 
-    generateLogo(width=WIDTH, height=HEIGHT, color=COLOR, backgroundColor=BACKGROUND_COLOR)
+    for backgroundColor in ['black', 'white', '#444444']:
+        for logoColor in ['black', 'white', '#c00000', '#444444']:
+                if logoColor != backgroundColor:
+                    generateLogo(width=WIDTH, height=HEIGHT, color=logoColor, backgroundColor=backgroundColor)
+
+    
+
 
 
