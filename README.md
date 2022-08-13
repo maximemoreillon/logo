@@ -1,3 +1,3 @@
 # Logo
 
-A Vue.js application to draw my logo
+A collection of utilities to draw my logo
