@@ -55,7 +55,6 @@ def generateLogo(height=800, width=600, color='#c00000', backgroundColor="transp
     x = 0.5 * width
     y = 0.5 * height
 
-    #drawing = draw.Drawing(width, height, origin="center")
     drawing = draw.Drawing(width, height)
 
     background = draw.Rectangle(0,0,width, height, fill=backgroundColor)
